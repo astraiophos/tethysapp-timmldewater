@@ -11,7 +11,7 @@ class ConstructionDewateringTool(TethysAppBase):
     icon = 'timmldewater/images/icon.gif'
     package = 'timmldewater'
     root_url = 'timmldewater'
-    color = '#f1c40f'
+    color = '#000ff'
     description = 'Simple tool for simulating the water table drawdown due to a system of wells surrounding an excavation. Model uses TimML to model groundwater behavior.'
     enable_feedback = False
     feedback_emails = []

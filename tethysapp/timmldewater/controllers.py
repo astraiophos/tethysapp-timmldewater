@@ -1,3 +1,5 @@
+import sys
+import os
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -103,6 +105,17 @@ def home(request):
 
 
 def generate_water_table(request):
+
+    #set module path for timml repository
+    sys.path.append("/home/jacobbf1/tethysdev/tethysapp-timmldewater/tethysapp/timmldewater/timml")
+    sys.path.append("/usr/local/lib/python2.7/dist-packages")
+    sys.path.append("/usr/lib/python2.7/dist-packages")
+
+    print os.getcwd()
+    print sys.path
+
+    from timml import *
+
     get_data = request.GET
 
     xIndex = json.loads(get_data['xIndex'])
@@ -116,6 +129,8 @@ def generate_water_table(request):
     k = float(json.loads(get_data['k']))
 
     waterTable = []
+
+    test = Model(k,[bedrock],[initial],[1.0])
 
     # This section constructs the featurecollection polygons defining the water table elevations
     # Cells are defined at the corners, water table elevation is defined at the center of the cell
