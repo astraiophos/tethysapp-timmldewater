@@ -140,36 +140,24 @@ def generate_water_table(request):
     waterTable = []
 
     #This is the analytic element model test, retrieving heads for now
-    ml = Model(k = [2,6,4], zb = [140,80,0], zt = [165,120,60], c = [2000,20000], n = [0.3,0.25,0.3], nll = [0.2,0.25])
-    rf = Constant(ml,20000,20000,175,[0])
-    p=CircAreaSink(ml,10000,10000,15000,0.0002,[0])
-    w1=Well(ml,10000,8000,3000,.3,[1],'well 1')
-    w2=Well(ml,12000,8000,5000,.3,[2],'well 2')
-    w3=Well(ml,10000,4600,5000,.3,[1,2],'maq well')
-    #
-    HeadLineSink(ml, 9510,  19466, 12620, 17376, 170,[0])
-    HeadLineSink(ml, 12620, 17376, 12753, 14976, 168,[0])
-    HeadLineSink(ml, 12753, 14976, 13020, 12176, 166,[0])
-    HeadLineSink(ml, 13020, 12176, 15066, 9466,  164,[0])
-    HeadLineSink(ml, 15066, 9466,  16443, 7910,  162,[0])
-    HeadLineSink(ml, 16443, 7910,  17510, 5286,  160,[0])
-    HeadLineSink(ml, 17510, 5286,  17600, 976,   158,[0])
-    #
-    HeadLineSink(ml, 356,   6976,  4043,  7153, 174,[0])
-    HeadLineSink(ml, 4043,  7153,  6176,  8400, 171,[0])
-    HeadLineSink(ml, 6176,  8400,  9286,  9820, 168,[0])
-    HeadLineSink(ml, 9286,  9820,  12266, 9686, 166,[0])
-    HeadLineSink(ml, 12266, 9686,  15066, 9466, 164,[0])
-    #
-    HeadLineSink(ml, 1376,  1910,  4176,  2043, 170,[0])
-    HeadLineSink(ml, 4176,  2043,  6800,  1553, 166,[0])
-    HeadLineSink(ml, 6800,  1553,  9953,  2086, 162,[0])
-    HeadLineSink(ml, 9953,  2086,  14043, 2043, 160,[0])
-    HeadLineSink(ml, 14043, 2043,  17600, 976 , 158,[0])
+    ml = Model(k = [k], zb = [bedrock], zt = [initial])
+    rf = Constant(ml,xIndex[0]+500,yIndex[0]+500,initial,[0])
+
+    # Add the wells to the analytic element model
+
+    pumpRate = (q / len(wYCoords))
+    print pumpRate
+
+    for lat in wYCoords:
+        print lat
+        for long in wXCoords:
+            print long
+            Well(ml,long,lat,pumpRate,1.0,0)
+
     #
     ml.solve(doIterations=True)
 
-    contourList = timcontour(ml, 0, 20000, 50, 0, 20000, 50, 3, 20, newfig = True, returncontours = True)
+    # contourList = timcontour(ml, 0, 20000, 50, 0, 20000, 50, 3, 20, newfig = True, returncontours = True)
     # matplotlib.pyplot.clf()
     # matplotlib.pyplot.cla()
     # matplotlib.pyplot.close("all")
@@ -210,9 +198,11 @@ def generate_water_table(request):
                                    ]
                     },
                     'properties': {
-                        'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
+                        # 'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
+                        'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
                     }
             })
+            # print ml.head(0,long,lat)
 
     return JsonResponse({
         "sucess": "Data analysis complete!",
