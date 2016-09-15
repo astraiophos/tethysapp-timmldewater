@@ -3,11 +3,11 @@
 
 function welcome_modal() {
     var myHTMLBody =
-        "<p>This tool is used to aid in the design of a simple construction dewatering system in" +
-        "an unconfined aquifer underlain by bedrock or a low permeability layer. The system consists" +
+        "<p>This tool is used to aid in the design of a simple construction dewatering system in " +
+        "an unconfined aquifer underlain by bedrock or a low permeability layer. The system consists " +
         "of one or more wells that fully penetrate the aquifer. Steps:</p>" +
             "<h6>1. Enter aquifer properties</h6>" +
-                "<p>Enter the average hydraulic conductivity of the aquifer, the average bedrock elevation," +
+                "<p>Enter the average hydraulic conductivity of the aquifer, the average bedrock elevation, " +
                 "and the average water table elevation prior to pumping.</p>" +
                 "<h6>2. Enter the project parameters</h6>" +
                 "<p>Enter the total pumping rate (each well will pump an equal fraction of this amount and " +

@@ -143,16 +143,21 @@ def generate_water_table(request):
     ml = Model(k = [k], zb = [bedrock], zt = [initial])
     rf = Constant(ml,xIndex[0]+500,yIndex[0]+500,initial,[0])
 
+    print (xIndex[0]+500)
+    print (yIndex[0]+500)
+
     # Add the wells to the analytic element model
 
     pumpRate = (q / len(wYCoords))
     print pumpRate
 
-    for lat in wYCoords:
-        print lat
-        for long in wXCoords:
-            print long
-            Well(ml,long,lat,pumpRate,1.0,0)
+    i = 0
+    while (i < len(wYCoords)):
+        Well(ml,wXCoords[i],wYCoords[i],pumpRate,0.5,0)
+        print wXCoords[i]
+        print wYCoords[i]
+        i = i + 1
+        print len(wYCoords)
 
     #
     ml.solve(doIterations=True)
@@ -198,8 +203,8 @@ def generate_water_table(request):
                                    ]
                     },
                     'properties': {
-                        # 'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
-                        'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
+                        'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
+                        # 'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
                     }
             })
             # print ml.head(0,long,lat)
