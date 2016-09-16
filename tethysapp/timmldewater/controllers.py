@@ -141,10 +141,10 @@ def generate_water_table(request):
 
     #This is the analytic element model test, retrieving heads for now
     ml = Model(k = [k], zb = [bedrock], zt = [initial])
-    rf = Constant(ml,xIndex[0]+500,yIndex[0]+500,initial,[0])
+    Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
 
-    print (xIndex[0]+500)
-    print (yIndex[0]+500)
+    # print (xIndex[0]+500)
+    # print (yIndex[0]+500)
 
     # Add the wells to the analytic element model
 
@@ -153,11 +153,11 @@ def generate_water_table(request):
 
     i = 0
     while (i < len(wYCoords)):
-        Well(ml,wXCoords[i],wYCoords[i],pumpRate,0.5,0)
-        print wXCoords[i]
-        print wYCoords[i]
+        Well(ml,wXCoords[i],wYCoords[i],pumpRate,10,0)
+        # print wXCoords[i]
+        # print wYCoords[i]
         i = i + 1
-        print len(wYCoords)
+        # print len(wYCoords)
 
     #
     ml.solve(doIterations=True)
@@ -169,11 +169,31 @@ def generate_water_table(request):
 
     root.destroy()
 
-    # try:
-    #     # equivalent to %matplotlib in IPython
-    #     get_ipython().magic('matplotlib')
-    # except:
-    #     pass
+    print "TimML generated heads"
+
+    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0]+cellSide)
+    print ml.head(0,wXCoords[0],wYCoords[0]+cellSide)
+    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0]+cellSide)
+    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0])
+    print ml.head(0,wXCoords[0],wYCoords[0])
+    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0])
+    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0]-cellSide)
+    print ml.head(0,wXCoords[0],wYCoords[0]-cellSide)
+    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0]-cellSide)
+
+    print " "
+
+    print "EQN generated heads"
+
+    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0],wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0],wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0],wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
+    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
 
     # try:
     #     count = 0
@@ -207,7 +227,9 @@ def generate_water_table(request):
                         # 'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
                     }
             })
-            # print ml.head(0,long,lat)
+            # if (wXCoords[0]-cellSide < long < wXCoords[0]+cellSide):
+            #     if (wYCoords[0]-cellSide < lat < wYCoords[0]+cellSide):
+            #         print elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
 
     return JsonResponse({
         "sucess": "Data analysis complete!",
