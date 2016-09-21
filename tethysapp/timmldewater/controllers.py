@@ -223,8 +223,8 @@ def generate_water_table(request):
                                    ]
                     },
                     'properties': {
-                        'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
-                        # 'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
+                        # 'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
+                        'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
                     }
             })
             # if (wXCoords[0]-cellSide < long < wXCoords[0]+cellSide):
@@ -243,6 +243,7 @@ def elevationCalc (long, lat, wXCoords,wYCoords,cellSide, initial, bedrock, q, k
 
     i = 0
     sum = 0.0
+    minr = 0.05
 
     while (i < len(wXCoords)):
 
@@ -256,8 +257,9 @@ def elevationCalc (long, lat, wXCoords,wYCoords,cellSide, initial, bedrock, q, k
         wellr = pow((pow(deltax,2) + pow(deltay,2)),0.5)
 
         #Make sure that we don't create a complex value for the water table elevation
-        if (wellr < math.exp(math.log(500)-math.pi*k*pow(H,2)/Q)):
-            wellr = math.exp(math.log(500)-math.pi*k*pow(H,2)/Q)
+        #(Previous Trial) math.exp(math.log(500)-math.pi*k*pow(H,2)/Q)
+        if (wellr < minr):
+            wellr = minr
             sum = sum + Q*math.log(500/wellr)
 
         elif (math.log(500/wellr)<0):
